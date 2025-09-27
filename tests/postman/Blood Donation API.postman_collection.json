@@ -1,0 +1,139 @@
+{
+	"info": {
+		"_postman_id": "579bcede-73bf-4eb9-9479-033cd9c9fe13",
+		"name": "Blood Donation API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "48802239",
+		"_collection_link": "https://ellie417-8720661.postman.co/workspace/Blood-Donation's-Workspace~b618ddef-a88f-4015-83df-88164268e3b3/collection/48802239-579bcede-73bf-4eb9-9479-033cd9c9fe13?action=share&source=collection_link&creator=48802239"
+	},
+	"item": [
+		{
+			"name": "GET donors",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('200 OK', () => pm.response.to.have.status(200));",
+							"pm.test('is array', () => pm.expect(Array.isArray(pm.response.json())).to.be.true);"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/donors",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"donors"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST donors",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.variables.set('rand', Math.floor(Math.random()*100000));"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('201/200 Created', () => pm.expect([200,201]).to.include(pm.response.code));",
+							"const j = pm.response.json()||{};",
+							"pm.test('has id/_id', () => pm.expect(j.id || j._id).to.be.ok);"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"Alice\",\n  \"email\": \"alice{{$randomInt}}@example.com\",\n  \"contactNumber\": \"0400000000\",\n  \"gender\": \"Female\",\n  \"age\": 25,\n  \"address\": \"Brisbane QLD\",\n  \"bloodType\": \"A+\",\n  \"bloodGroup\": \"A+\",\n  \"lastDonationDate\": \"2024-06-01\"\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/donors",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"donors"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST request",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('201/200 Created', () => pm.expect([200,201]).to.include(pm.response.code));",
+							"pm.test('json object', () => pm.expect(typeof pm.response.json()).to.eql('object'));"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"patientName\": \"John Doe\",\n  \"bloodTypeNeeded\": \"A+\",\n  \"hospitalName\": \"QUT Medical\",\n  \"status\": \"URGENT\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/request",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"request"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
