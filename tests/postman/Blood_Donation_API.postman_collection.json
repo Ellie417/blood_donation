@@ -1,0 +1,57 @@
+{
+  "info": {
+    "name": "Blood Donation API",
+    "_postman_id": "bd-api",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "GET donors",
+      "request": { "method": "GET", "url": "{{baseUrl}}/donors" },
+      "event": [
+        { "listen": "test", "script": { "type": "text/javascript", "exec": [
+          "pm.test('200 OK', () => pm.response.to.have.status(200));",
+          "pm.test('is array', () => pm.expect(Array.isArray(pm.response.json())).to.be.true);"
+        ]}}
+      ]
+    },
+    {
+      "name": "POST donors",
+      "event": [
+        { "listen": "prerequest", "script": { "type": "text/javascript", "exec": [
+          "pm.variables.set('rand', Math.floor(Math.random()*100000));"
+        ]}},
+        { "listen": "test", "script": { "type": "text/javascript", "exec": [
+          "pm.test('201/200 Created', () => pm.expect([200,201]).to.include(pm.response.code));",
+          "const j = pm.response.json()||{};",
+          "pm.test('has id/_id', () => pm.expect(j.id || j._id).to.be.ok);"
+        ]}}
+      ],
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw":
+          "{\n  \"name\": \"Alice\",\n  \"email\": \"alice{{rand}}@example.com\",\n  \"contactNumber\": \"0400000000\",\n  \"lastDonationDate\": \"2024-06-01\",\n  \"bloodType\": \"A+\"\n}"
+        },
+        "url": "{{baseUrl}}/donors"
+      }
+    },
+    {
+      "name": "POST request",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw":
+          "{\n  \"patientName\": \"John Doe\",\n  \"bloodTypeNeeded\": \"A+\",\n  \"hospitalName\": \"QUT Medical\",\n  \"status\": \"URGENT\"\n}"
+        },
+        "url": "{{baseUrl}}/request"
+      },
+      "event": [
+        { "listen": "test", "script": { "type": "text/javascript", "exec": [
+          "pm.test('201/200 Created', () => pm.expect([200,201]).to.include(pm.response.code));",
+          "pm.test('json object', () => pm.expect(typeof pm.response.json()).to.eql('object'));"
+        ]}}
+      ]
+    }
+  ]
+}
